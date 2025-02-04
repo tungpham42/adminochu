@@ -19,29 +19,27 @@ app.post("/api/words", (req, res) => {
   if (!word || !clue) {
     return res.status(400).json({ message: "Word and clue are required" });
   }
-  const newWord = { word, clue };
+  const newWord = { id: words.length + 1, word, clue };
   words.push(newWord);
-  res.json({ id: words.length - 1, ...newWord });
+  res.json(newWord);
 });
 
 // Update a word
 app.put("/api/words/:id", (req, res) => {
-  const id = parseInt(req.params.id);
+  const { id } = req.params;
   const { word, clue } = req.body;
-  if (id < 0 || id >= words.length) {
+  const wordIndex = words.findIndex((w) => w.id === parseInt(id));
+  if (wordIndex === -1) {
     return res.status(404).json({ message: "Word not found" });
   }
-  words[id] = { word, clue };
-  res.json({ id, ...words[id] });
+  words[wordIndex] = { id: parseInt(id), word, clue };
+  res.json(words[wordIndex]);
 });
 
 // Delete a word
 app.delete("/api/words/:id", (req, res) => {
-  const id = parseInt(req.params.id);
-  if (id < 0 || id >= words.length) {
-    return res.status(404).json({ message: "Word not found" });
-  }
-  words.splice(id, 1);
+  const { id } = req.params;
+  words = words.filter((w) => w.id !== parseInt(id));
   res.json({ message: "Word deleted" });
 });
 
