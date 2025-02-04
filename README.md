@@ -1,0 +1,2 @@
+# adminochu
+Admin Ô Chữ
